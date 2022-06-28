@@ -5,6 +5,36 @@
               pluginCharacteristicsValue="pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn">
   <MAINGROUP id="U8OJYl" name="CREAM-Project">
     <GROUP id="{E448E9CE-B6E6-A76C-D4F5-2ABA3011DD84}" name="Source">
+      <GROUP id="{DD615078-45E0-B4BA-0AE5-09A8D1B880F2}" name="Service">
+        <FILE id="ieOSnM" name="PresetManager.cpp" compile="1" resource="0"
+              file="Source/Service/PresetManager.cpp"/>
+        <FILE id="fyREJp" name="PresetManager.h" compile="0" resource="0" file="Source/Service/PresetManager.h"/>
+      </GROUP>
+      <GROUP id="{A9A43D54-C922-E8BA-A735-2E73FB69EF3C}" name="Utility">
+        <FILE id="RtaTxP" name="ParameterHelper.h" compile="0" resource="0"
+              file="Source/Utility/ParameterHelper.h"/>
+      </GROUP>
+      <GROUP id="{38C6FD4C-A61E-7801-A5AC-367698E76D88}" name="UI">
+        <FILE id="VRRpF6" name="AdsrComponent.cpp" compile="1" resource="0"
+              file="Source/UI/AdsrComponent.cpp"/>
+        <FILE id="vRWiSL" name="AdsrComponent.h" compile="0" resource="0" file="Source/UI/AdsrComponent.h"/>
+        <FILE id="d7oNjU" name="FilterComponent.cpp" compile="1" resource="0"
+              file="Source/UI/FilterComponent.cpp"/>
+        <FILE id="iDLEFJ" name="FilterComponent.h" compile="0" resource="0"
+              file="Source/UI/FilterComponent.h"/>
+        <FILE id="n4mzug" name="OscComponent.cpp" compile="1" resource="0"
+              file="Source/UI/OscComponent.cpp"/>
+        <FILE id="YIDSsA" name="OscComponent.h" compile="0" resource="0" file="Source/UI/OscComponent.h"/>
+        <FILE id="XPDz2D" name="PresetPanel.h" compile="0" resource="0" file="Source/UI/PresetPanel.h"/>
+      </GROUP>
+      <GROUP id="{5D6FCE61-400F-849B-7C44-9FD16FA61101}" name="Data">
+        <FILE id="yQ7aG0" name="AdsrData.cpp" compile="1" resource="0" file="Source/Data/AdsrData.cpp"/>
+        <FILE id="tFs3i9" name="AdsrData.h" compile="0" resource="0" file="Source/Data/AdsrData.h"/>
+        <FILE id="v4d3I5" name="FilterData.cpp" compile="1" resource="0" file="Source/Data/FilterData.cpp"/>
+        <FILE id="kmsaHV" name="FilterData.h" compile="0" resource="0" file="Source/Data/FilterData.h"/>
+        <FILE id="Qz9k4C" name="OscData.cpp" compile="1" resource="0" file="Source/Data/OscData.cpp"/>
+        <FILE id="s5Rymx" name="OscData.h" compile="0" resource="0" file="Source/Data/OscData.h"/>
+      </GROUP>
       <FILE id="MBQRbD" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="r2TGOO" name="PluginProcessor.h" compile="0" resource="0"
@@ -12,6 +42,9 @@
       <FILE id="GegOlN" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="PW6aWj" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="aibPiQ" name="SynthVoice.cpp" compile="1" resource="0" file="Source/SynthVoice.cpp"/>
+      <FILE id="j6mzFU" name="SynthVoice.h" compile="0" resource="0" file="Source/SynthVoice.h"/>
+      <FILE id="x58Jaz" name="SynthSound.h" compile="0" resource="0" file="Source/SynthSound.h"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>

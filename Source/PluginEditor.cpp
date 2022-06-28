@@ -1,40 +1,45 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
-
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-//==============================================================================
 CREAMProjectAudioProcessorEditor::CREAMProjectAudioProcessorEditor (CREAMProjectAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+: AudioProcessorEditor (&p)
+, audioProcessor (p)
+, osc(audioProcessor.apvts,"OSC1WAVETYPE", "OSC1FMFREQ", "OSC1FMDEPTH")
+, adsr("Amp Envelope", audioProcessor.apvts, "ATTACK", "DECAY", "SUSTAIN", "RELEASE")
+, filter(audioProcessor.apvts, "FILTERTYPE", "FILTERCUTOFF", "FILTERRES")
+, modAdsr("Mod Envelope", audioProcessor.apvts, "MODATTACK", "MODDECAY", "MODSUSTAIN", "MODRELEASE")
+
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
-    setSize (400, 300);
+    setSize (620, 500);
+
+    addAndMakeVisible(adsr);
+    addAndMakeVisible(osc);
+    addAndMakeVisible(filter);
+    addAndMakeVisible(modAdsr);
 }
 
 CREAMProjectAudioProcessorEditor::~CREAMProjectAudioProcessorEditor()
 {
 }
 
-//==============================================================================
 void CREAMProjectAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-
-    g.setColour (juce::Colours::white);
-    g.setFont (15.0f);
-    g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
+    g.fillAll (juce::Colours::black);
 }
 
 void CREAMProjectAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
+    //set adsr bounds
+    const int paddingX = 5;
+    const int paddingY = 35;
+    const int paddingY2 = 235;
+    const int width = 300;
+    const int height = 200;
+        
+    osc.setBounds (paddingX, paddingY, width, height);
+    adsr.setBounds (osc.getRight(), paddingY, width, height);
+    filter.setBounds(paddingX, paddingY2, width, height);
+    modAdsr.setBounds(filter.getRight(), paddingY2, width, height);
 }
+
+

@@ -1,22 +1,12 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
-
 #pragma once
 
 #include <JuceHeader.h>
+#include "SynthVoice.h"
+#include "SynthSound.h"
 
-//==============================================================================
-/**
-*/
 class CREAMProjectAudioProcessor  : public juce::AudioProcessor
 {
 public:
-    //==============================================================================
     CREAMProjectAudioProcessor();
     ~CREAMProjectAudioProcessor() override;
 
@@ -53,7 +43,11 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    juce::AudioProcessorValueTreeState apvts;
 private:
+    juce::Synthesiser synth;
+    juce::AudioProcessorValueTreeState::ParameterLayout createParams();
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CREAMProjectAudioProcessor)
 };
