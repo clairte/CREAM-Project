@@ -10,11 +10,16 @@ CREAMProjectAudioProcessor::CREAMProjectAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       ), apvts (*this, nullptr, "Parameters", createParams())
+                       )
+    ,apvts (*this, nullptr, ProjectInfo::projectName, createParams())
 #endif
 {
     synth.addSound(new SynthSound());
     synth.addVoice(new SynthVoice());
+    apvts.state.setProperty(Service::PresetManager::presetNameProperty, "", nullptr);
+    apvts.state.setProperty("version", ProjectInfo::versionString, nullptr);
+    
+    presetManager = std::make_unique<Service::PresetManager>(apvts); 
 }
 
 CREAMProjectAudioProcessor::~CREAMProjectAudioProcessor()
@@ -176,7 +181,6 @@ void CREAMProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     
 }
 
-//==============================================================================
 bool CREAMProjectAudioProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
@@ -187,18 +191,19 @@ juce::AudioProcessorEditor* CREAMProjectAudioProcessor::createEditor()
     return new CREAMProjectAudioProcessorEditor (*this);
 }
 
-//==============================================================================
 void CREAMProjectAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    const auto state = apvts.copyState();
+    const auto xml(state.createXml());
+    copyXmlToBinary(*xml, destData);
 }
 
 void CREAMProjectAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    const auto xmlState = getXmlFromBinary(data, sizeInBytes);
+    if (xmlState == nullptr) { return; }
+    const auto newTree = juce::ValueTree::fromXml(*xmlState);
+    apvts.replaceState(newTree);
 }
 
 //==============================================================================
@@ -239,7 +244,6 @@ juce::AudioProcessorValueTreeState::ParameterLayout CREAMProjectAudioProcessor::
     params.push_back(std::make_unique<juce::AudioParameterChoice>("FILTERTYPE", "Filter Type", juce::StringArray{"Low-Pass", "Band-Pass", "High-Pass"}, 0));
     params.push_back(std::make_unique<juce::AudioParameterFloat> ("FILTERCUTOFF", "Filter Cutoff", juce::NormalisableRange<float> { 20.0f, 20000.0f, 0.1f, 0.6f }, 200.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat> ("FILTERRES", "Filter Resonance", juce::NormalisableRange<float> { 1.0f, 10.0f, 0.1f}, 1.0f));
-    
     
     return {params.begin(), params.end() };
 }

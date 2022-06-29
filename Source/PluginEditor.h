@@ -5,6 +5,7 @@
 #include "UI/AdsrComponent.h"
 #include "UI/OscComponent.h"
 #include "UI/FilterComponent.h"
+#include "UI/PresetPanel.h"
 
 //==============================================================================
 /**
@@ -21,10 +22,12 @@ public:
 
 private:
     CREAMProjectAudioProcessor& audioProcessor;
+
     OscComponent osc;
     AdsrComponent adsr;
     FilterComponent filter;
     AdsrComponent modAdsr;
+    PresetPanel presetPanel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CREAMProjectAudioProcessorEditor)
 };

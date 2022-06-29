@@ -67,4 +67,5 @@ void FilterComponent::setSliderWithLabel (juce::Slider& slider, juce::Label& lab
     label.setJustificationType(juce::Justification::centred);
     label.setFont(15.0f);
     addAndMakeVisible(label);
+    
 }

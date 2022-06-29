@@ -3,6 +3,7 @@
 #include <JuceHeader.h>
 #include "SynthVoice.h"
 #include "SynthSound.h"
+#include "Service/PresetManager.h"
 
 class CREAMProjectAudioProcessor  : public juce::AudioProcessor
 {
@@ -42,11 +43,14 @@ public:
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
+    
+    Service::PresetManager& getPresetManager() { return *presetManager; }
 
     juce::AudioProcessorValueTreeState apvts;
 private:
     juce::Synthesiser synth;
     juce::AudioProcessorValueTreeState::ParameterLayout createParams();
+    std::unique_ptr<Service::PresetManager> presetManager;
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CREAMProjectAudioProcessor)
