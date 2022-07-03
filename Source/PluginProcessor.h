@@ -4,6 +4,7 @@
 #include "SynthVoice.h"
 #include "SynthSound.h"
 #include "Service/PresetManager.h"
+#include "Utility/ParameterHelper.h"
 
 class CREAMProjectAudioProcessor  : public juce::AudioProcessor
 {
@@ -49,7 +50,6 @@ public:
     juce::AudioProcessorValueTreeState apvts;
 private:
     juce::Synthesiser synth;
-    juce::AudioProcessorValueTreeState::ParameterLayout createParams();
     std::unique_ptr<Service::PresetManager> presetManager;
     
     //==============================================================================
