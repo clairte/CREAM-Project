@@ -5,11 +5,16 @@ bool SynthVoice::canPlaySound (juce::SynthesiserSound* sound)
     return dynamic_cast<juce::SynthesiserSound*>(sound) != nullptr;
 }
 
-void SynthVoice::startNote (int midiNoteNumber, float velocity, juce::SynthesiserSound* sound, int currentPitchWheelPosition)
+void SynthVoice::startNote (int midiNoteNumber, float velocity, juce::SynthesiserSound *sound, int currentPitchWheelPosition)
 {
-    osc.setWaveFrequency(midiNoteNumber);
+    for (int i = 0; i < 2; i++)
+    {
+        osc1[i].setFreq (midiNoteNumber);
+        osc2[i].setFreq (midiNoteNumber);
+    }
+    
     adsr.noteOn();
-    modAdsr.noteOn();
+    filterAdsr.noteOn();
 }
 
 void SynthVoice::stopNote (float velocity, bool allowTailOff)
@@ -71,6 +76,16 @@ void SynthVoice::renderNextBlock (juce::AudioBuffer <float> &outputBuffer, int s
     
     juce::dsp::AudioBlock<float> audioBlock {synthBuffer};
     
+    for (int ch = 0; ch < synthBuffer.getNumChannels(); ++ch)
+    {
+        auto* buffer = synthBuffer.getWritePointer (ch, 0);
+        
+        for (int s = 0; s < synthBuffer.getNumSamples(); ++s)
+        {
+            buffer[s] = osc1[ch].processNextSample (buffer[s]) + osc2[ch].processNextSample (buffer[s]);
+        }
+    }
+    
     //osc process runs, finish running, audioBlock contain sinewave info
     osc.getNextAudioBlock(audioBlock);
     adsr.applyEnvelopeToBuffer(synthBuffer, 0, synthBuffer.getNumSamples());
@@ -89,6 +104,14 @@ void SynthVoice::renderNextBlock (juce::AudioBuffer <float> &outputBuffer, int s
     }
 }
 
+void SynthVoice::reset()
+{
+    gain.reset();
+    adsr.reset();
+    filterAdsr.reset();
+}
+
+
 void SynthVoice::updateFilter(const int filterType, const float cutoff, const float resonance)
 {
     float modulator = modAdsr.getNextSample();
@@ -99,3 +122,15 @@ void SynthVoice::updateModAdsr (const float attack, const float decay, const flo
 {
     modAdsr.updateADSR (attack, decay, sustain, release);
 }
+
+void SynthVoice::updateModParams (const int filterType, const float filterCutoff, const float filterResonance, const float adsrDepth, const float lfoFreq, const float lfoDepth)
+{
+    auto cutoff = (adsrDepth * filterAdsrOutput) + filterCutoff;
+    cutoff = std::clamp<float> (cutoff, 20.0f, 20000.0f);
+
+    for (int ch = 0; ch < numChannelsToProcess; ++ch)
+    {
+        filter[ch].setParams (filterType, cutoff, filterResonance);
+    }
+    
+    
