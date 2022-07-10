@@ -6,6 +6,10 @@
 #include "UI/OscComponent.h"
 #include "UI/FilterComponent.h"
 #include "UI/PresetPanel.h"
+#include "UI/LfoComponent.h"
+#include "UI/ReverbComponent.h"
+#include "UI/MeterComponent.h"
+#include "UI/Assets.h"
 
 //==============================================================================
 /**
@@ -19,14 +23,21 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+    
+    void timerCallback() override;
 
 private:
     CREAMProjectAudioProcessor& audioProcessor;
 
-    OscComponent osc;
+    OscComponent osc1;
+    PscComponent osc2;
     AdsrComponent adsr;
     FilterComponent filter;
     AdsrComponent modAdsr;
+    ReverbComponent reverb;
+    MeterComponent meter;
+    juce::ImageComponent logo;
+    
     PresetPanel presetPanel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CREAMProjectAudioProcessorEditor)
