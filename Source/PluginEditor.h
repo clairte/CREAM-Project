@@ -6,10 +6,10 @@
 #include "UI/OscComponent.h"
 #include "UI/FilterComponent.h"
 #include "UI/PresetPanel.h"
-#include "UI/LfoComponent.h"
+/* #include "UI/LfoComponent.h"
 #include "UI/ReverbComponent.h"
 #include "UI/MeterComponent.h"
-#include "UI/Assets.h"
+#include "UI/Assets.h" */
 
 //==============================================================================
 /**
@@ -24,7 +24,7 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
     
-    void timerCallback() override;
+    //void timerCallback() override;
 
 private:
     CREAMProjectAudioProcessor& audioProcessor;
@@ -33,9 +33,9 @@ private:
     AdsrComponent adsr;
     FilterComponent filter;
     AdsrComponent modAdsr;
-    ReverbComponent reverb;
-    MeterComponent meter;
-    juce::ImageComponent logo;
+    //ReverbComponent reverb;
+    //MeterComponent meter;
+    //juce::ImageComponent logo;
     
     PresetPanel presetPanel;
 
