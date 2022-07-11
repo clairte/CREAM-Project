@@ -7,14 +7,10 @@ bool SynthVoice::canPlaySound (juce::SynthesiserSound* sound)
 
 void SynthVoice::startNote (int midiNoteNumber, float velocity, juce::SynthesiserSound *sound, int currentPitchWheelPosition)
 {
-    for (int i = 0; i < 2; i++)
-    {
-        osc1[i].setFreq (midiNoteNumber);
-        osc2[i].setFreq (midiNoteNumber);
-    }
+    osc.setWaveFrequency(midiNoteNumber);
     
     adsr.noteOn();
-    filterAdsr.noteOn();
+    modAdsr.noteOn();
 }
 
 void SynthVoice::stopNote (float velocity, bool allowTailOff)
@@ -76,7 +72,7 @@ void SynthVoice::renderNextBlock (juce::AudioBuffer <float> &outputBuffer, int s
     
     juce::dsp::AudioBlock<float> audioBlock {synthBuffer};
     
-    for (int ch = 0; ch < synthBuffer.getNumChannels(); ++ch)
+    /*for (int ch = 0; ch < synthBuffer.getNumChannels(); ++ch)
     {
         auto* buffer = synthBuffer.getWritePointer (ch, 0);
         
@@ -84,7 +80,7 @@ void SynthVoice::renderNextBlock (juce::AudioBuffer <float> &outputBuffer, int s
         {
             buffer[s] = osc1[ch].processNextSample (buffer[s]) + osc2[ch].processNextSample (buffer[s]);
         }
-    }
+    }*/
     
     //osc process runs, finish running, audioBlock contain sinewave info
     osc.getNextAudioBlock(audioBlock);
@@ -123,14 +119,4 @@ void SynthVoice::updateModAdsr (const float attack, const float decay, const flo
     modAdsr.updateADSR (attack, decay, sustain, release);
 }
 
-void SynthVoice::updateModParams (const int filterType, const float filterCutoff, const float filterResonance, const float adsrDepth, const float lfoFreq, const float lfoDepth)
-{
-    auto cutoff = (adsrDepth * filterAdsrOutput) + filterCutoff;
-    cutoff = std::clamp<float> (cutoff, 20.0f, 20000.0f);
-
-    for (int ch = 0; ch < numChannelsToProcess; ++ch)
-    {
-        filter[ch].setParams (filterType, cutoff, filterResonance);
-    }
-    
     
