@@ -232,7 +232,7 @@ void CREAMProjectAudioProcessor::setStateInformation (const void* data, int size
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new CREAMProjectAudioProcessorEditor();
+    return new CREAMProjectAudioProcessor();
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout CREAMProjectAudioProcessorEditor::createParams()
