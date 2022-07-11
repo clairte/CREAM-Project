@@ -29,8 +29,7 @@ public:
 private:
     CREAMProjectAudioProcessor& audioProcessor;
 
-    OscComponent osc1;
-    PscComponent osc2;
+    OscComponent osc;
     AdsrComponent adsr;
     FilterComponent filter;
     AdsrComponent modAdsr;
