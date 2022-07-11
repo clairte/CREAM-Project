@@ -52,13 +52,14 @@ private:
     juce::Synthesiser synth;
     
     //==============================================================================
-    juce::AudioProcessorValueTreeState::ParameterLayout createParams();
+    //juce::AudioProcessorValueTreeState::ParameterLayout createParams();
+    
     void setParams();
     void setVoiceParams();
     void setFilterParams();
     void setReverbParams();
     
-    static constexpr int numVoices { 5 };
+    //static constexpr int numVoices { 5 };
     juce::dsp::Reverb reverb;
     juce::Reverb::Parameters reverbParams;
     MeterData meter;
