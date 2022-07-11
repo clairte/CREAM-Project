@@ -29,6 +29,8 @@ public:
     void reset();
     
 private:
+    juce::AudioBuffer<float> synthBuffer;
+
     OscData osc;
     AdsrData adsr;
     FilterData filter;
