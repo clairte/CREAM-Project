@@ -104,7 +104,7 @@ void SynthVoice::reset()
 {
     gain.reset();
     adsr.reset();
-    filterAdsr.reset();
+    modAdsr.reset();
 }
 
 
