@@ -2,7 +2,8 @@
 
 <JUCERPROJECT id="GkbL9A" name="CREAM-Project" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
-              pluginCharacteristicsValue="pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn">
+              pluginCharacteristicsValue="pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn"
+              cppLanguageStandard="17">
   <MAINGROUP id="U8OJYl" name="CREAM-Project">
     <GROUP id="{E448E9CE-B6E6-A76C-D4F5-2ABA3011DD84}" name="Source">
       <GROUP id="{DD615078-45E0-B4BA-0AE5-09A8D1B880F2}" name="Service">

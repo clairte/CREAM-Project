@@ -90,7 +90,6 @@ void CREAMProjectAudioProcessor::changeProgramName (int index, const juce::Strin
 {
 }
 
-//==============================================================================
 void CREAMProjectAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     synth.setCurrentPlaybackSampleRate(sampleRate);
@@ -161,41 +160,13 @@ void CREAMProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
     
-    for (int i = 0; i < synth.getNumVoices(); ++i)
-    {
-        if (auto voice = dynamic_cast<SynthVoice*> (synth.getVoice(i)))
-        {
-            auto& oscWaveChoice = *apvts.getRawParameterValue("OSC1WAVETYPE");
-            auto& fmDepth = *apvts.getRawParameterValue("OSC1FMFREQ");
-            auto& fmFreq = *apvts.getRawParameterValue("OSC1FMDEPTH");
-            
-            //Amp Adsr
-            auto& attack = *apvts.getRawParameterValue("ATTACK"); //returns std atomic pointer
-            auto& decay = *apvts.getRawParameterValue("DECAY");
-            auto& sustain = *apvts.getRawParameterValue("SUSTAIN");
-            auto& release = *apvts.getRawParameterValue("RELEASE");
-            
-            //Filter
-            auto& filterType = *apvts.getRawParameterValue("FILTERTYPE");
-            auto& cutoff = *apvts.getRawParameterValue("FILTERCUTOFF");
-            auto& resonance = *apvts.getRawParameterValue("FILTERRES");
-            
-            //Mod Adsr
-            auto& modAttack = *apvts.getRawParameterValue("MODATTACK"); //returns std atomic pointer
-            auto& modDecay = *apvts.getRawParameterValue("MODDECAY");
-            auto& modSustain = *apvts.getRawParameterValue("MODSUSTAIN");
-            auto& modRelease = *apvts.getRawParameterValue("MODRELEASE");
-            
-            voice->getOscillator().setWaveType(oscWaveChoice);
-            voice->getOscillator().updateFm(fmDepth,fmFreq);
-            voice->updateAdsr(attack.load(), decay.load(), sustain.load(), release.load());
-            voice->updateFilter(filterType.load(), cutoff.load(), resonance.load());
-            voice->updateModAdsr(modAttack, modDecay, modSustain, modRelease);
-           
-        }
-    }
-
+    setParams();
+    
     synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+    
+    //Process reverb 
+    juce::dsp::AudioBlock<float> block { buffer };
+    reverb.process (juce::dsp::ProcessContextReplacing<float> (block));
     
 }
 
@@ -235,86 +206,77 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
     return new CREAMProjectAudioProcessor();
 }
 
-//void TapSynthAudioProcessor::setParams()
-//{
-//    setVoiceParams();
-//    setFilterParams();
-//    setReverbParams();
-//}
-//
-//void CREAMProjectAudioProcessorEditor::setVoiceParams()
-//{
-//    for (int i = 0; i < synth.getNumVoices(); ++i)
-//    {
-//        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
-//        {
-//            auto& attack = *apvts.getRawParameterValue ("ATTACK");
-//            auto& decay = *apvts.getRawParameterValue ("DECAY");
-//            auto& sustain = *apvts.getRawParameterValue ("SUSTAIN");
-//            auto& release = *apvts.getRawParameterValue ("RELEASE");
-//
-//            auto& osc1Choice = *apvts.getRawParameterValue ("OSC1");
-//            auto& osc2Choice = *apvts.getRawParameterValue ("OSC2");
-//            auto& osc1Gain = *apvts.getRawParameterValue ("OSC1GAIN");
-//            auto& osc2Gain = *apvts.getRawParameterValue ("OSC2GAIN");
-//            auto& osc1Pitch = *apvts.getRawParameterValue ("OSC1PITCH");
-//            auto& osc2Pitch = *apvts.getRawParameterValue ("OSC2PITCH");
-//            auto& osc1FmFreq = *apvts.getRawParameterValue ("OSC1FMFREQ");
-//            auto& osc2FmFreq = *apvts.getRawParameterValue ("OSC2FMFREQ");
-//            auto& osc1FmDepth = *apvts.getRawParameterValue ("OSC1FMDEPTH");
-//            auto& osc2FmDepth = *apvts.getRawParameterValue ("OSC2FMDEPTH");
-//
-//            auto& filterAttack = *apvts.getRawParameterValue ("FILTERATTACK");
-//            auto& filterDecay = *apvts.getRawParameterValue ("FILTERDECAY");
-//            auto& filterSustain = *apvts.getRawParameterValue ("FILTERSUSTAIN");
-//            auto& filterRelease = *apvts.getRawParameterValue ("FILTERRELEASE");
-//
-//            auto& osc1 = voice->getOscillator1();
-//            auto& osc2 = voice->getOscillator2();
-//
-//            auto& adsr = voice->getAdsr();
-//            auto& filterAdsr = voice->getFilterAdsr();
-//
-//            for (int i = 0; i < getTotalNumOutputChannels(); i++)
-//            {
-//                osc1[i].setParams (osc1Choice, osc1Gain, osc1Pitch, osc1FmFreq, osc1FmDepth);
-//                osc2[i].setParams (osc2Choice, osc2Gain, osc2Pitch, osc2FmFreq, osc2FmDepth);
-//            }
-//
-//            adsr.update (attack.load(), decay.load(), sustain.load(), release.load());
-//            filterAdsr.update (filterAttack, filterDecay, filterSustain, filterRelease);
-//        }
-//    }
-//}
-//
-//void CREAMProjectAudioProcessorEditor::setFilterParams()
-//{
-//    auto& filterType = *apvts.getRawParameterValue ("FILTERTYPE");
-//    auto& filterCutoff = *apvts.getRawParameterValue ("FILTERCUTOFF");
-//    auto& filterResonance = *apvts.getRawParameterValue ("FILTERRESONANCE");
-//    auto& adsrDepth = *apvts.getRawParameterValue ("FILTERADSRDEPTH");
-//    auto& lfoFreq = *apvts.getRawParameterValue ("LFO1FREQ");
-//    auto& lfoDepth = *apvts.getRawParameterValue ("LFO1DEPTH");
-//
-//    for (int i = 0; i < synth.getNumVoices(); ++i)
-//    {
-//        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
-//        {
-//            voice->updateModParams (filterType, filterCutoff, filterResonance, adsrDepth, lfoFreq, lfoDepth);
-//        }
-//    }
-//}
-//
-//void CREAMProjectAudioProcessorEditor::setReverbParams()
-//{
-//    reverbParams.roomSize = *apvts.getRawParameterValue ("REVERBSIZE");
-//    reverbParams.width = *apvts.getRawParameterValue ("REVERBWIDTH");
-//    reverbParams.damping = *apvts.getRawParameterValue ("REVERBDAMPING");
-//    reverbParams.dryLevel = *apvts.getRawParameterValue ("REVERBDRY");
-//    reverbParams.wetLevel = *apvts.getRawParameterValue ("REVERBWET");
-//    reverbParams.freezeMode = *apvts.getRawParameterValue ("REVERBFREEZE");
-//
-//    reverb.setParameters (reverbParams);
-//}
-//
-//
+void CREAMProjectAudioProcessor::setParams()
+{
+    setVoiceParams();
+    setFilterParams();
+    setReverbParams();
+}
+
+void CREAMProjectAudioProcessor::setVoiceParams()
+{
+    for (int i = 0; i < synth.getNumVoices(); ++i)
+    {
+        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
+        {
+            auto& oscWaveChoice = *apvts.getRawParameterValue("OSC1WAVETYPE");
+            auto& fmDepth = *apvts.getRawParameterValue("OSC1FMFREQ");
+            auto& fmFreq = *apvts.getRawParameterValue("OSC1FMDEPTH");
+
+            //Amp Adsr
+            auto& attack = *apvts.getRawParameterValue("ATTACK"); //returns std atomic pointer
+            auto& decay = *apvts.getRawParameterValue("DECAY");
+            auto& sustain = *apvts.getRawParameterValue("SUSTAIN");
+            auto& release = *apvts.getRawParameterValue("RELEASE");
+            
+
+            //Mod Adsr
+            auto& filterAttack = *apvts.getRawParameterValue("MODATTACK"); //returns std atomic pointer
+            auto& filterDecay = *apvts.getRawParameterValue("MODDECAY");
+            auto& filterSustain = *apvts.getRawParameterValue("MODSUSTAIN");
+            auto& filterRelease = *apvts.getRawParameterValue("MODRELEASE");
+
+            
+            voice->getOscillator().setWaveType(oscWaveChoice);
+            voice->getOscillator().setFmOsc(fmDepth,fmFreq);
+            voice->updateAdsr(attack.load(), decay.load(), sustain.load(), release.load());
+            //voice->updateFilter(filterType.load(), cutoff.load(), resonance.load());
+            voice->updateModAdsr(filterAttack, filterDecay, filterSustain, filterRelease);
+        }
+        
+    }
+}
+
+
+void CREAMProjectAudioProcessor::setFilterParams()
+{
+    auto& filterType = *apvts.getRawParameterValue("FILTERTYPE");
+    auto& filterCutoff = *apvts.getRawParameterValue("FILTERCUTOFF");
+    auto& filterResonance = *apvts.getRawParameterValue("FILTERRES");
+    auto& adsrDepth = *apvts.getRawParameterValue ("FILTERADSRDEPTH");
+    auto& lfoFreq = *apvts.getRawParameterValue ("LFO1FREQ");
+    auto& lfoDepth = *apvts.getRawParameterValue ("LFO1DEPTH");
+
+    for (int i = 0; i < synth.getNumVoices(); ++i)
+    {
+        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
+        {
+            //voice->updateModParams (filterType, filterCutoff, filterResonance, adsrDepth, lfoFreq, lfoDepth);
+        }
+    }
+}
+
+
+void CREAMProjectAudioProcessor::setReverbParams()
+{
+    reverbParams.roomSize = *apvts.getRawParameterValue ("REVERBSIZE");
+    reverbParams.width = *apvts.getRawParameterValue ("REVERBWIDTH");
+    reverbParams.damping = *apvts.getRawParameterValue ("REVERBDAMPING");
+    reverbParams.dryLevel = *apvts.getRawParameterValue ("REVERBDRY");
+    reverbParams.wetLevel = *apvts.getRawParameterValue ("REVERBWET");
+    reverbParams.freezeMode = *apvts.getRawParameterValue ("REVERBFREEZE");
+
+    reverb.setParameters (reverbParams);
+}
+
+

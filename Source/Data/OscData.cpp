@@ -2,6 +2,9 @@
 
 void OscData::prepareToPlay(juce::dsp::ProcessSpec& spec)
 {
+    resetAll();
+    
+    //spec contains all necessary info (e.g. sample rate) passed down when called from synthVoice prepare to play
     fmOsc.prepare(spec);
     prepare(spec);
 }
@@ -30,9 +33,41 @@ void OscData::setWaveType(const int choice)
 
 void OscData::setWaveFrequency(const int midiNoteNumber)
 {
-    setFrequency (juce::MidiMessage::getMidiNoteInHertz (midiNoteNumber) + fmMod);
+    setFrequency (juce::MidiMessage::getMidiNoteInHertz (midiNoteNumber + lastPitch) + fmModulator);
     //fmMod value will be between 1 and -1, modulates frequency of main wave
     lastMidiNote = midiNoteNumber;
+}
+
+
+void OscData::setOscPitch (const int pitch)
+{
+    lastPitch = pitch;
+    setFrequency (juce::MidiMessage::getMidiNoteInHertz ((lastMidiNote + lastPitch) + fmModulator));
+
+}
+
+void OscData::setFmOsc (const float depth, const float freq)
+{
+    fmOsc.setFrequency(freq); //get from value tree, user sets
+    fmDepth = depth;
+    auto currentFreq = juce::MidiMessage::getMidiNoteInHertz (lastMidiNote + lastPitch) + fmModulator;
+    setFrequency (currentFreq >= 0 ? currentFreq : currentFreq * -1.0f);
+    //if currentFreq>=0, set to cF, if not, *-1.0 and set that
+    //update frequency when fm is modulated, originally set frequency only calls when you press a midi note
+    
+}
+
+void OscData::setGain (const float levelInDecibels)
+{
+    gain.setGainDecibels (levelInDecibels);
+}
+
+void OscData::setParams (const int oscChoice, const float oscGain, const int oscPitch, const float fmFreq, const float fmDepth)
+{
+    setWaveType (oscChoice);
+    setGain (oscGain);
+    setOscPitch (oscPitch);
+    setFmOsc (fmFreq, fmDepth);
 }
 
 void OscData::getNextAudioBlock(juce::dsp::AudioBlock<float>& block)
@@ -42,19 +77,15 @@ void OscData::getNextAudioBlock(juce::dsp::AudioBlock<float>& block)
         //go into samples in our chennel
         for (int s= 0; s < block.getNumSamples(); ++s)
         {
-            fmMod = fmOsc.processSample(block.getSample(ch, s)) * fmDepth;  //processSample returns a floatingpoint value
+            fmModulator = fmOsc.processSample(block.getSample(ch, s)) * fmDepth;  //processSample returns a floatingpoint value
         }
     }
     process(juce::dsp::ProcessContextReplacing<float> (block));
 }
 
-void OscData::updateFm (const float depth, const float freq)
+void OscData::resetAll()
 {
-    fmOsc.setFrequency(freq); //get from value tree, user sets
-    fmDepth = depth;
-    auto currentFreq = juce::MidiMessage::getMidiNoteInHertz (lastMidiNote) + fmMod;
-    setFrequency (currentFreq >= 0 ? currentFreq : currentFreq * -1.0f); //if currentFreq>=0, set to cF, if not, *-1.0 and set that
-    //update frequency when fm is modulated, originally set frequency only calls when you press a midi note
-    
+    reset();
+    fmOsc.reset();
+    gain.reset();
 }
-

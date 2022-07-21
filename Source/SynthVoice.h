@@ -21,7 +21,7 @@ public:
     void renderNextBlock (juce::AudioBuffer <float> &outputBuffer, int startSample, int numSamples) override;
     
     void updateAdsr(const float attack, const float decay, const float sustain, const float release);
-    void updateFilter(const int filterType, const float cutoff, const float resonance);
+    void updateModParams (const int filterType, const float filterCutoff, const float filterResonance, const float adsrDepth, const float lfoFreq, const float lfoDepth);
     void updateModAdsr (const float attack, const float decay, const float sustain, const float release);
     
     OscData& getOscillator() { return osc;}
@@ -30,11 +30,14 @@ public:
     
 private:
     juce::AudioBuffer<float> synthBuffer;
+    static constexpr int numChannelsToProcess { 2 };
 
     OscData osc;
     AdsrData adsr;
-    FilterData filter;
-    AdsrData modAdsr;
+    std::array<FilterData, numChannelsToProcess> filter;
+    AdsrData filterAdsr;
+    
+    float filterAdsrOutput { 0.0f };
     
     juce::dsp::Gain<float> gain;
     bool isPrepared { false };
