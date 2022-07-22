@@ -13,12 +13,15 @@ public:
     bool canPlaySound (juce::SynthesiserSound* sound) override;
     void startNote (int midiNoteNumber, float velocity, juce::SynthesiserSound* sound, int currentPitchWheelPosition) override;
     void stopNote (float velocity, bool allowTailOff) override;
-    
     void pitchWheelMoved (int newPitchWheelValue) override;
     void controllerMoved (int controllerNumber, int newControllerValue) override;
     
     void prepareToPlay (double sampleRate, int samplesPerBlock, int outputChannels);
     void renderNextBlock (juce::AudioBuffer <float> &outputBuffer, int startSample, int numSamples) override;
+    
+    //Accesses oscillators, returns address to oscillator data
+    std::array<OscData, 2>& getOscillator1()  { return osc1; }
+    std::array<OscData, 2>& getOscillator2()  { return osc2; }
     
     void updateAdsr(const float attack, const float decay, const float sustain, const float release);
     void updateModParams (const int filterType, const float filterCutoff, const float filterResonance, const float adsrDepth, const float lfoFreq, const float lfoDepth);
@@ -33,8 +36,12 @@ private:
     static constexpr int numChannelsToProcess { 2 };
 
     OscData osc;
-    AdsrData adsr;
+    std::array<OscData, numChannelsToProcess> osc1;
+    std::array<OscData, numChannelsToProcess> osc2;
+    std::array<juce::dsp::Oscillator<float>, numChannelsToProcess> lfo; 
     std::array<FilterData, numChannelsToProcess> filter;
+
+    AdsrData adsr;
     AdsrData filterAdsr;
     
     float filterAdsrOutput { 0.0f };
