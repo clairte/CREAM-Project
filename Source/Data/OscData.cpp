@@ -1,10 +1,14 @@
 #include "OscData.h"
 
-void OscData::prepareToPlay(juce::dsp::ProcessSpec& spec)
+void OscData::prepareToPlay(double sampleRate, int samplesPerBlock, int outputChannels)
 {
     resetAll();
     
-    //spec contains all necessary info (e.g. sample rate) passed down when called from synthVoice prepare to play
+    juce::dsp::ProcessSpec spec;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.sampleRate = sampleRate;
+    spec.numChannels = outputChannels;
+    
     fmOsc.prepare(spec);
     prepare(spec);
 }
@@ -70,17 +74,30 @@ void OscData::setParams (const int oscChoice, const float oscGain, const int osc
     setFmOsc (fmFreq, fmDepth);
 }
 
-void OscData::getNextAudioBlock(juce::dsp::AudioBlock<float>& block)
+//void OscData::getNextAudioBlock(juce::dsp::AudioBlock<float>& block)
+//{
+//    for (int ch = 0; ch < block.getNumChannels(); ++ch)
+//    {
+//        //go into samples in our chennel
+//        for (int s= 0; s < block.getNumSamples(); ++s)
+//        {
+//            fmModulator = fmOsc.processSample(block.getSample(ch, s)) * fmDepth;  //processSample returns a floatingpoint value
+//        }
+//    }
+//    process(juce::dsp::ProcessContextReplacing<float> (block));
+//}
+
+void OscData::renderNextBlock(juce::dsp::AudioBlock<float>& audioBlock)
 {
-    for (int ch = 0; ch < block.getNumChannels(); ++ch)
-    {
-        //go into samples in our chennel
-        for (int s= 0; s < block.getNumSamples(); ++s)
-        {
-            fmModulator = fmOsc.processSample(block.getSample(ch, s)) * fmDepth;  //processSample returns a floatingpoint value
-        }
-    }
-    process(juce::dsp::ProcessContextReplacing<float> (block));
+    jassert(audioBlock.getNumSamples() > 0);
+    process (juce::dsp::ProcessContextReplacing<float> (audioBlock));
+    gain.process(juce::dsp::ProcessContextReplacing<float> (audioBlock)); 
+}
+
+float OscData::processNextSample(float input)
+{
+    fmModulator = fmOsc.processSample(input) * fmDepth;
+    return gain.processSample (processSample (input));
 }
 
 void OscData::resetAll()

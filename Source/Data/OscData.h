@@ -5,7 +5,7 @@ class OscData : public juce::dsp::Oscillator<float>
 {
 public:
     
-    void prepareToPlay (juce::dsp::ProcessSpec& spec);
+    void prepareToPlay (double sampleRate, int samplesPerBlock, int outputChannels);
     void setWaveType(const int choice);
     void setWaveFrequency (const int midiNoteNumber);
     void setOscPitch (const int pitch);
@@ -14,6 +14,7 @@ public:
     void setParams (const int oscChoice, const float oscGain, const int oscPitch, const float fmFreq, const float fmDepth);
     
     void getNextAudioBlock(juce::dsp::AudioBlock<float>& block);
+    void renderNextBlock(juce::dsp::AudioBlock<float>& audioBlock); 
     float processNextSample (float input);
     void resetAll();
     
