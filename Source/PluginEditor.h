@@ -6,36 +6,30 @@
 #include "UI/OscComponent.h"
 #include "UI/FilterComponent.h"
 #include "UI/PresetPanel.h"
-/* #include "UI/LfoComponent.h"
+#include "UI/LfoComponent.h"
 #include "UI/ReverbComponent.h"
-#include "UI/MeterComponent.h"
-#include "UI/Assets.h" */
 
-//==============================================================================
-/**
-*/
-class CREAMProjectAudioProcessorEditor  : public juce::AudioProcessorEditor
+class CREAMProjectAudioProcessorEditor  : public juce::AudioProcessorEditor, public juce::Timer
 {
 public:
     CREAMProjectAudioProcessorEditor (CREAMProjectAudioProcessor&);
     ~CREAMProjectAudioProcessorEditor() override;
 
-    //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
     
-    //void timerCallback() override;
+    void timerCallback() override;
 
 private:
     CREAMProjectAudioProcessor& audioProcessor;
 
-    OscComponent osc;
+    OscComponent osc1;
+    OscComponent osc2;
     AdsrComponent adsr;
     FilterComponent filter;
-    AdsrComponent modAdsr;
-    //ReverbComponent reverb;
-    //MeterComponent meter;
-    //juce::ImageComponent logo;
+    AdsrComponent filterAdsr;
+    LfoComponent lfo1;
+    ReverbComponent reverb;
     
     PresetPanel presetPanel;
 

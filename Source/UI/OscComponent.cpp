@@ -1,21 +1,25 @@
 #include <JuceHeader.h>
 #include "OscComponent.h"
 
-OscComponent::OscComponent(juce::AudioProcessorValueTreeState& apvts, juce::String waveSelectorId, juce::String fmFreqId, juce::String fmDepthId)
+OscComponent::OscComponent(juce::AudioProcessorValueTreeState& apvts, juce::String waveSelectorId, juce::String gainId, juce::String pitchId, juce::String fmFreqId, juce::String fmDepthId)
+: gain("Gain", gainId, apvts, dialWidth, dialHeight)
+, pitch("Pitch", pitchId, apvts, dialWidth, dialHeight)
+, fmFreq("FM Freq", fmFreqId, apvts, dialWidth, dialHeight)
+, fmDepth("FM Depth", fmDepthId, apvts, dialWidth, dialHeight)
 {
+    //Set up osc selector
     juce::StringArray choices {"Sine", "Saw", "Square"};
-    oscWaveSelector.addItemList(choices, 1);
-    addAndMakeVisible(oscWaveSelector);
+    oscSelector.addItemList(choices, 1);
+    oscSelector.setSelectedItemIndex(0);
+    addAndMakeVisible(oscSelector);
     
-    oscWaveSelectorAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(apvts, waveSelectorId, oscWaveSelector);
+    oscSelectorAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(apvts, waveSelectorId, oscSelector);
     
-    waveSelectorLabel.setColour (juce::Label::ColourIds::textColourId, juce::Colours::white);
-    waveSelectorLabel.setFont (15.0f);
-    waveSelectorLabel.setJustificationType (juce::Justification::left);
-    addAndMakeVisible (waveSelectorLabel);
-    
-    setSliderWithLabel(fmFreqSlider, fmFreqLabel, apvts, fmFreqId, fmFreqAttachment);
-    setSliderWithLabel(fmDepthSlider, fmDepthLabel, apvts, fmDepthId, fmDepthAttachment);
+    //Set up completed in utility components slider w label
+    addAndMakeVisible(gain);
+    addAndMakeVisible(pitch);
+    addAndMakeVisible(fmFreq);
+    addAndMakeVisible(fmDepth);
     
 }
 
@@ -23,49 +27,17 @@ OscComponent::~OscComponent()
 {
 }
 
-void OscComponent::paint (juce::Graphics& g)
-{
-    auto bounds = getLocalBounds().reduced (5);
-    auto labelSpace = bounds.removeFromTop (25.0f);
-        
-    g.fillAll (juce::Colours::black);
-    g.setColour (juce::Colours::white);
-    g.setFont (20.0f);
-    g.drawText ("Oscillator", labelSpace.withX (5), juce::Justification::left);
-    g.drawRoundedRectangle (bounds.toFloat(), 5.0f, 2.0f);
-}
-
 void OscComponent::resized()
 {
-    const int startY = 55;
-    const int sliderWidth = 100;
-    const int sliderHeight = 90;
-    const int labelYOffset = 20;
-    const int labelHeight = 20;
+    const int yStart = 15;
+    const int width = 70;
+    const int height = 88;
     
-    oscWaveSelector.setBounds(10, startY + 5, 90, 30);
-    waveSelectorLabel.setBounds(10, startY - labelYOffset, 90, labelHeight);
+    oscSelector.setBounds(18, 40, 100, 25);
+    gain.setBounds(120, yStart, width, height);
+    pitch.setBounds(190, yStart, width, height);
+    fmFreq.setBounds(260, yStart, width, height);
+    fmDepth.setBounds(330, yStart, width, height);
     
-    fmFreqSlider.setBounds(oscWaveSelector.getRight(), startY, sliderWidth, sliderHeight);
-    fmFreqLabel.setBounds(fmFreqSlider.getX(), fmFreqSlider.getY() - labelYOffset, fmFreqSlider.getWidth(), labelHeight);
-    
-    fmDepthSlider.setBounds(fmFreqSlider.getRight(), startY, sliderWidth, sliderHeight);
-    fmDepthLabel.setBounds(fmDepthSlider.getX(), fmDepthSlider.getY() - labelYOffset, fmDepthSlider.getWidth(), labelHeight);
-
 }
 
-using Attachment = juce::AudioProcessorValueTreeState::SliderAttachment;
-
-void OscComponent::setSliderWithLabel (juce::Slider& slider, juce::Label& label, juce::AudioProcessorValueTreeState& apvts, juce::String paramId, std::unique_ptr<Attachment>& attachment)
-{
-    slider.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
-    slider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 50, 25);
-    addAndMakeVisible(slider);
-    
-    attachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(apvts, paramId, slider);
-    
-    label.setColour(juce::Label::ColourIds::textColourId, juce::Colours::white);
-    label.setJustificationType(juce::Justification::centred);
-    label.setFont(15.0f);
-    addAndMakeVisible(label);
-}

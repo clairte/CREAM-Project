@@ -23,10 +23,21 @@
               file="Source/UI/FilterComponent.cpp"/>
         <FILE id="iDLEFJ" name="FilterComponent.h" compile="0" resource="0"
               file="Source/UI/FilterComponent.h"/>
+        <FILE id="BO2GKi" name="LfoComponent.cpp" compile="1" resource="0"
+              file="Source/UI/LfoComponent.cpp"/>
+        <FILE id="q310ZP" name="LfoComponent.h" compile="0" resource="0" file="Source/UI/LfoComponent.h"/>
         <FILE id="n4mzug" name="OscComponent.cpp" compile="1" resource="0"
               file="Source/UI/OscComponent.cpp"/>
         <FILE id="YIDSsA" name="OscComponent.h" compile="0" resource="0" file="Source/UI/OscComponent.h"/>
         <FILE id="XPDz2D" name="PresetPanel.h" compile="0" resource="0" file="Source/UI/PresetPanel.h"/>
+        <FILE id="qrzgU7" name="ReverbComponent.cpp" compile="1" resource="0"
+              file="Source/UI/ReverbComponent.cpp"/>
+        <FILE id="ij2Qzp" name="ReverbComponent.h" compile="0" resource="0"
+              file="Source/UI/ReverbComponent.h"/>
+        <FILE id="EFwlwK" name="UtilityComponents.cpp" compile="1" resource="0"
+              file="Source/UI/UtilityComponents.cpp"/>
+        <FILE id="b1VOM2" name="UtilityComponents.h" compile="0" resource="0"
+              file="Source/UI/UtilityComponents.h"/>
       </GROUP>
       <GROUP id="{5D6FCE61-400F-849B-7C44-9FD16FA61101}" name="Data">
         <FILE id="yQ7aG0" name="AdsrData.cpp" compile="1" resource="0" file="Source/Data/AdsrData.cpp"/>
