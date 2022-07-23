@@ -16,7 +16,12 @@ CREAMProjectAudioProcessor::CREAMProjectAudioProcessor()
 #endif
 {
     synth.addSound(new SynthSound());
-    synth.addVoice(new SynthVoice());
+   
+    for (int i = 0; i < 5; i++)
+    {
+        synth.addVoice (new SynthVoice());
+    }
+    
     apvts.state.setProperty(Service::PresetManager::presetNameProperty, "", nullptr);
     apvts.state.setProperty("version", ProjectInfo::versionString, nullptr);
     
@@ -90,6 +95,8 @@ void CREAMProjectAudioProcessor::changeProgramName (int index, const juce::Strin
 {
 }
 
+
+
 void CREAMProjectAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     synth.setCurrentPlaybackSampleRate(sampleRate);
@@ -103,7 +110,6 @@ void CREAMProjectAudioProcessor::prepareToPlay (double sampleRate, int samplesPe
         }
     }
      
-    //**: the values here need exact modification!! 这里的数值是按照我们做的synthsizer变的！
     juce::dsp::ProcessSpec spec;
     spec.maximumBlockSize = samplesPerBlock;
     spec.sampleRate = sampleRate;
@@ -158,7 +164,9 @@ void CREAMProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
+    {
         buffer.clear (i, 0, buffer.getNumSamples());
+    }
     
     setParams();
     
@@ -196,10 +204,6 @@ void CREAMProjectAudioProcessor::setStateInformation (const void* data, int size
 }
 
 
-
-//needs modifications of real values!
-
-
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
@@ -219,9 +223,22 @@ void CREAMProjectAudioProcessor::setVoiceParams()
     {
         if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
         {
-            auto& oscWaveChoice = *apvts.getRawParameterValue("OSC1WAVETYPE");
-            auto& fmDepth = *apvts.getRawParameterValue("OSC1FMFREQ");
-            auto& fmFreq = *apvts.getRawParameterValue("OSC1FMDEPTH");
+            auto& osc1 = voice->getOscillator1();
+            auto& osc2 = voice->getOscillator2();
+            
+            auto& adsr = voice->getAdsr();
+            auto& filterAdsr = voice->getFilterAdsr(); 
+            
+            auto& osc1Choice = *apvts.getRawParameterValue("OSC1TYPE");
+            auto& osc2Choice = *apvts.getRawParameterValue("OSC2TYPE");
+            auto& osc1Gain = *apvts.getRawParameterValue("OSC1GAIN");
+            auto& osc2Gain = *apvts.getRawParameterValue("OSC2GAIN");
+            auto& osc1Pitch = *apvts.getRawParameterValue("OSC1PITCH");
+            auto& osc2Pitch = *apvts.getRawParameterValue("OSC2PITCH");
+            auto& osc1FmFreq = *apvts.getRawParameterValue("OSC1FMFREQ");
+            auto& osc2FmFreq = *apvts.getRawParameterValue("OSC2FMFREQ");
+            auto& osc1FmDepth = *apvts.getRawParameterValue("OSC1FMDEPTH");
+            auto& osc2FmDepth = *apvts.getRawParameterValue("OSC2FMDEPTH");
 
             //Amp Adsr
             auto& attack = *apvts.getRawParameterValue("ATTACK"); //returns std atomic pointer
@@ -230,20 +247,21 @@ void CREAMProjectAudioProcessor::setVoiceParams()
             auto& release = *apvts.getRawParameterValue("RELEASE");
             
 
-            //Mod Adsr
-            auto& filterAttack = *apvts.getRawParameterValue("MODATTACK"); //returns std atomic pointer
-            auto& filterDecay = *apvts.getRawParameterValue("MODDECAY");
-            auto& filterSustain = *apvts.getRawParameterValue("MODSUSTAIN");
-            auto& filterRelease = *apvts.getRawParameterValue("MODRELEASE");
+            //Filter Adsr
+            auto& filterAttack = *apvts.getRawParameterValue("FILTERATTACK"); //returns std atomic pointer
+            auto& filterDecay = *apvts.getRawParameterValue("FILTERDECAY");
+            auto& filterSustain = *apvts.getRawParameterValue("FILTERSUSTAIN");
+            auto& filterRelease = *apvts.getRawParameterValue("FILTERRELEASE");
 
+            for (int i = 0; i < getTotalNumOutputChannels(); i++)
+            {
+                osc1[i].setParams(osc1Choice,osc1Gain, osc1Pitch, osc1FmFreq, osc1FmDepth);
+                osc2[i].setParams(osc2Choice,osc2Gain, osc2Pitch, osc2FmFreq, osc2FmDepth);
+            }
             
-            voice->getOscillator().setWaveType(oscWaveChoice);
-            voice->getOscillator().setFmOsc(fmDepth,fmFreq);
-            voice->updateAdsr(attack.load(), decay.load(), sustain.load(), release.load());
-            //voice->updateFilter(filterType.load(), cutoff.load(), resonance.load());
-            voice->updateModAdsr(filterAttack, filterDecay, filterSustain, filterRelease);
+            adsr.updateADSR(attack.load(), decay.load(), sustain.load(), release.load());
+            filterAdsr.updateADSR(filterAttack, filterDecay, filterSustain, filterRelease);
         }
-        
     }
 }
 
@@ -261,7 +279,7 @@ void CREAMProjectAudioProcessor::setFilterParams()
     {
         if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
         {
-            //voice->updateModParams (filterType, filterCutoff, filterResonance, adsrDepth, lfoFreq, lfoDepth);
+            voice->updateModParams (filterType, filterCutoff, filterResonance, adsrDepth, lfoFreq, lfoDepth);
         }
     }
 }

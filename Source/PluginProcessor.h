@@ -46,21 +46,23 @@ public:
     juce::AudioProcessorValueTreeState apvts;
     
 private:
-    juce::Synthesiser synth;
     
     void setParams();
     void setVoiceParams();
     void setFilterParams();
     void setReverbParams();
     
-    //static constexpr int numVoices { 5 };
+    static constexpr int numChannelsToProcess { 2 };
+    juce::Synthesiser synth;
+    static constexpr int numVoices { 5 };
+    
     juce::dsp::Reverb reverb;
     juce::Reverb::Parameters reverbParams;
     //MeterData meter;
     
-    //==============================================================================
+
     std::unique_ptr<Service::PresetManager> presetManager;
     
-    //==============================================================================
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CREAMProjectAudioProcessor)
 };

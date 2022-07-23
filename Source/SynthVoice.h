@@ -28,6 +28,8 @@ public:
     void updateModAdsr (const float attack, const float decay, const float sustain, const float release);
     
     OscData& getOscillator() { return osc;}
+    AdsrData& getAdsr() { return adsr; }
+    AdsrData& getFilterAdsr() { return filterAdsr; }
     
     void reset();
     
