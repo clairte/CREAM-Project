@@ -74,19 +74,6 @@ void OscData::setParams (const int oscChoice, const float oscGain, const int osc
     setFmOsc (fmFreq, fmDepth);
 }
 
-//void OscData::getNextAudioBlock(juce::dsp::AudioBlock<float>& block)
-//{
-//    for (int ch = 0; ch < block.getNumChannels(); ++ch)
-//    {
-//        //go into samples in our chennel
-//        for (int s= 0; s < block.getNumSamples(); ++s)
-//        {
-//            fmModulator = fmOsc.processSample(block.getSample(ch, s)) * fmDepth;  //processSample returns a floatingpoint value
-//        }
-//    }
-//    process(juce::dsp::ProcessContextReplacing<float> (block));
-//}
-
 void OscData::renderNextBlock(juce::dsp::AudioBlock<float>& audioBlock)
 {
     jassert(audioBlock.getNumSamples() > 0);
