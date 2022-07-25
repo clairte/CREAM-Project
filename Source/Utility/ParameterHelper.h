@@ -54,6 +54,12 @@ namespace Utility
             params.push_back(std::make_unique<juce::AudioParameterFloat> ("FILTERCUTOFF", "Filter Cutoff", juce::NormalisableRange<float> { 20.0f, 20000.0f, 0.1f, 0.6f }, 200.0f));
             params.push_back(std::make_unique<juce::AudioParameterFloat> ("FILTERRES", "Filter Resonance", juce::NormalisableRange<float> { 1.0f, 10.0f, 0.1f}, 1.0f));
             
+            //FILTER SLIDER
+            params.push_back(std::make_unique<juce::AudioParameterFloat> ("FILTERSLIDERALL", "Filter Slider All", juce::NormalisableRange<float> { 20.0f, 20000.0f, 0.1f, 0.6f }, 200.0f));
+            
+            //REVERB SLIDER
+            params.push_back (std::make_unique<juce::AudioParameterFloat>("REVERBSLIDERALL", "Reverb Slider All", juce::NormalisableRange<float> { 0.0f, 1.0f, 0.1f }, 0.0f, ""));
+            
             //LFO
             params.push_back (std::make_unique<juce::AudioParameterFloat> ("LFO1FREQ", "LFO1 Frequency", juce::NormalisableRange<float> { 0.0f, 20.0f, 0.1f }, 0.0f, "Hz"));
             params.push_back (std::make_unique<juce::AudioParameterFloat> ("LFO1DEPTH", "LFO1 Depth", juce::NormalisableRange<float> { 0.0f, 10000.0f, 0.1f, 0.3f }, 0.0f, ""));

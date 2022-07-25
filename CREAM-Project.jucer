@@ -23,6 +23,9 @@
               file="Source/UI/FilterComponent.cpp"/>
         <FILE id="iDLEFJ" name="FilterComponent.h" compile="0" resource="0"
               file="Source/UI/FilterComponent.h"/>
+        <FILE id="yXxmic" name="FilterSlider.cpp" compile="1" resource="0"
+              file="Source/UI/FilterSlider.cpp"/>
+        <FILE id="E8vfIC" name="FilterSlider.h" compile="0" resource="0" file="Source/UI/FilterSlider.h"/>
         <FILE id="BO2GKi" name="LfoComponent.cpp" compile="1" resource="0"
               file="Source/UI/LfoComponent.cpp"/>
         <FILE id="q310ZP" name="LfoComponent.h" compile="0" resource="0" file="Source/UI/LfoComponent.h"/>
@@ -34,6 +37,9 @@
               file="Source/UI/ReverbComponent.cpp"/>
         <FILE id="ij2Qzp" name="ReverbComponent.h" compile="0" resource="0"
               file="Source/UI/ReverbComponent.h"/>
+        <FILE id="hQAHal" name="ReverbSlider.cpp" compile="1" resource="0"
+              file="Source/UI/ReverbSlider.cpp"/>
+        <FILE id="S7yD3F" name="ReverbSlider.h" compile="0" resource="0" file="Source/UI/ReverbSlider.h"/>
         <FILE id="EFwlwK" name="UtilityComponents.cpp" compile="1" resource="0"
               file="Source/UI/UtilityComponents.cpp"/>
         <FILE id="b1VOM2" name="UtilityComponents.h" compile="0" resource="0"
@@ -42,6 +48,8 @@
       <GROUP id="{5D6FCE61-400F-849B-7C44-9FD16FA61101}" name="Data">
         <FILE id="yQ7aG0" name="AdsrData.cpp" compile="1" resource="0" file="Source/Data/AdsrData.cpp"/>
         <FILE id="tFs3i9" name="AdsrData.h" compile="0" resource="0" file="Source/Data/AdsrData.h"/>
+        <FILE id="p6xZX1" name="ChorusData.cpp" compile="1" resource="0" file="Source/Data/ChorusData.cpp"/>
+        <FILE id="uVj2f0" name="ChorusData.h" compile="0" resource="0" file="Source/Data/ChorusData.h"/>
         <FILE id="v4d3I5" name="FilterData.cpp" compile="1" resource="0" file="Source/Data/FilterData.cpp"/>
         <FILE id="kmsaHV" name="FilterData.h" compile="0" resource="0" file="Source/Data/FilterData.h"/>
         <FILE id="Qz9k4C" name="OscData.cpp" compile="1" resource="0" file="Source/Data/OscData.cpp"/>

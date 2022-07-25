@@ -8,6 +8,8 @@
 #include "UI/PresetPanel.h"
 #include "UI/LfoComponent.h"
 #include "UI/ReverbComponent.h"
+#include "UI/FilterSlider.h"
+#include "UI/ReverbSlider.h"
 
 class CREAMProjectAudioProcessorEditor  : public juce::AudioProcessorEditor, public juce::Timer
 {
@@ -30,6 +32,9 @@ private:
     AdsrComponent filterAdsr;
     LfoComponent lfo1;
     ReverbComponent reverb;
+    
+    FilterSlider filterSlider;
+    ReverbSlider reverbSlider; 
     
     PresetPanel presetPanel;
 

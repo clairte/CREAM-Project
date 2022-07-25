@@ -12,10 +12,12 @@ CREAMProjectAudioProcessorEditor::CREAMProjectAudioProcessorEditor (CREAMProject
 , filterAdsr(audioProcessor.apvts, "FILTERATTACK", "FILTERDECAY", "FILTERSUSTAIN", "FILTERRELEASE")
 , lfo1(audioProcessor.apvts, "LFO1FREQ", "LFO1DEPTH")
 , reverb(audioProcessor.apvts, "REVERBSIZE", "REVERBDAMPING", "REVERBWIDTH", "REVERBDRY", "REVERBWET", "REVERBFREEZE")
+, filterSlider(audioProcessor.apvts, "FILTERSLIDERALL")
+, reverbSlider(audioProcessor.apvts, "REVERBSLIDERALL")
 , presetPanel(p.getPresetManager()) //pass preset manager from audio processor 
 
 {
-    setSize (1080, 600);
+    setSize (1080, 800);
 
     addAndMakeVisible(osc1);
     addAndMakeVisible(osc2);
@@ -24,6 +26,9 @@ CREAMProjectAudioProcessorEditor::CREAMProjectAudioProcessorEditor (CREAMProject
     addAndMakeVisible(filterAdsr);
     addAndMakeVisible(lfo1);
     addAndMakeVisible(reverb);
+    
+    addAndMakeVisible(filterSlider);
+    addAndMakeVisible(reverbSlider);
     
     addAndMakeVisible(presetPanel);
     
@@ -34,6 +39,9 @@ CREAMProjectAudioProcessorEditor::CREAMProjectAudioProcessorEditor (CREAMProject
     filterAdsr.setName("Filter ADSR");
     lfo1.setName("Filter LFO");
     
+    filterSlider.setName("Filter Slider");
+    reverbSlider.setName("Reverb Slider"); 
+    
     auto oscColour = juce::Colour::fromRGB(247, 190, 67);
     auto filterColour = juce::Colour::fromRGB(246, 87, 64);
     
@@ -43,6 +51,9 @@ CREAMProjectAudioProcessorEditor::CREAMProjectAudioProcessorEditor (CREAMProject
     filterAdsr.setBoundsColour(filterColour);
     filter.setBoundsColour(filterColour);
     lfo1.setBoundsColour(filterColour);
+    
+    filterSlider.setBoundsColour(filterColour);
+    
     
     startTimerHz(30);
     
@@ -73,6 +84,8 @@ void CREAMProjectAudioProcessorEditor::resized()
     filterAdsr.setBounds(filter.getRight(), presetPanel.getBottom(), 230, 360);
     adsr.setBounds(filterAdsr.getRight(), presetPanel.getBottom(), 230, 360);
     reverb.setBounds(0, osc2.getBottom(), oscWidth, 150);
+    filterSlider.setBounds(reverb.getRight(), lfo1.getBottom(), 130, 360);
+    reverbSlider.setBounds(filterSlider.getRight(), lfo1.getBottom(), 130, 360); 
     
     
 }
